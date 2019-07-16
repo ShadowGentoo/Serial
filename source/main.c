@@ -8,8 +8,8 @@
 int main(int argc, char const *argv[])
 {
     int fd;
-    char buffer[255];
-    memset(&buffer, 0, 255);
+    char buffer;
+    char msg[255];
 
     fd = open("/dev/ttyACM0",O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd == -1)
@@ -30,17 +30,18 @@ int main(int argc, char const *argv[])
     terminal.c_cflag &= ~CSIZE; /* Mask the character size bits */
     terminal.c_cflag |= CS8;    /* Select 8 data bits */
     tcsetattr(fd, TCSANOW, &terminal);
-    
-    fcntl(fd, F_SETFL, 0);
 
-    printf("ready to receive data!");
+    printf("ready to receive data!\n");
     while (1)
     {
-        
-        if (read(fd, &buffer, 255) > 0)
+        if (read(fd, &buffer, 1) > 0)
         {
-            printf("Message: %s\n", buffer);
-            memset(&buffer, 0, 255);
+            strcat(msg, &buffer);
+            if (buffer == '\0')
+            {
+                printf("%s\n", msg);
+                memset(msg, 0, 255);
+            }
         }
     }
 
