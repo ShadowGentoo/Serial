@@ -9,7 +9,6 @@ int main(int argc, char const *argv[])
 {
     int fd;
     char buffer;
-    char msg[255];
 
     fd = open("/dev/ttyACM0",O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd == -1)
@@ -36,12 +35,7 @@ int main(int argc, char const *argv[])
     {
         if (read(fd, &buffer, 1) > 0)
         {
-            strcat(msg, &buffer);
-            if (buffer == '\0')
-            {
-                printf("%s\n", msg);
-                memset(msg, 0, 255);
-            }
+            putchar(buffer);
         }
     }
 
